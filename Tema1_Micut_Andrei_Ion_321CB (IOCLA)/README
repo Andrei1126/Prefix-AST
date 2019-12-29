@@ -1,0 +1,70 @@
+
+Nume: Micut Andrei-Ion
+Grupa: 321CB
+Tema 1, IOCLA
+
+	Am inceput prin a gandi problema intr-un limbaj de programare cunoscut mie
+si anume C. Astfel, am ajuns la un cod ce presupune parcurgerea arborelui in
+preordine si parsarea unor numere (codul il gasiti la final).
+	Asadar am ajuns cu necesitatea a 3 functii separate:
+		* get_number() care sa primeasca un sir de caractere si sa imi returneze
+		  numerul reprezentat de acesta (cam aceeasi functionalitate cu functia
+		  atoi() din stdlib.h sau strtol() din string.h)
+		* compute_operation() care primeste cei doi operanzi pentru care urmeaza
+		  sa fie aplicata operatia continuta in parametrul operator, returnand
+		  rezultatul operatiei
+		* solve(), functia care parcurge in preordine arborele dat si returneaza
+		  rezultatul asteptat.
+  
+  Pentru a nu umbla cu numere magice pentru accesarea campurilor din structura,
+am definit structura Node la inceputul fisierului.
+	
+	Dificultatea temei a provenit din faptul ca am utilizat functii si am
+folosit stiva pentru a trimite acestora parametrii, dar si pentru a salva
+cateva variabile pe care le-as fi "pierdut" in cazul in care le lasam doar
+in registre. Utilizarea stivei arata eleganta unei solutii recursive.
+
+Codul C echivalent:
+
+	int get_number(char *str) {
+		int nr = 0;
+		int sgn = 1;
+
+		if (*str == '-') {
+			sgn = -1;
+			++ str;
+		}
+
+		while (*str) {
+			nr = nr * 10 + *str - '0';
+			++ str;
+		}
+
+		return nr * sgn;
+	}
+
+	int compute_operation(int op1, int op2, char operator) {
+		switch (operator) {
+			case '+':
+				return op1 + op2;
+			case '-':
+				return op1 - op2;
+			case '*':
+				return op1 * op2;
+			case '/':
+				return op1 * op2;
+		}
+	}
+
+	int solve(struct Node *root) {
+		int left, right;
+
+		if (root->left == NULL) {
+			return get_number(root->data);
+		}
+
+		left = solve(root->left);
+		right = solve(root->right);
+
+		return get_operator(left, right, root->data[0]);
+	}
